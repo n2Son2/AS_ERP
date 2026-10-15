@@ -6,12 +6,12 @@ test('tạo nhân sự duy nhất từ nhiều dòng chấm công và giữ mã 
   const plan = buildEmployeeSyncPlan([
     { employee_code: '00001', employee_name: '---', department: '-' },
     { employee_code: '00001', employee_name: 'Hà Thị Kim Thanh', department: 'Văn phòng' },
-  ], [], '2026-10-15T00:00:00.000Z');
+  ], [], '2026-10-15T00:00:00.000Z', () => '123e4567-e89b-42d3-a456-426614174000');
 
   assert.equal(plan.sourceCount, 1);
   assert.equal(plan.newCount, 1);
   assert.deepEqual(plan.rows[0], {
-    id: 'emp_00001',
+    id: '123e4567-e89b-42d3-a456-426614174000',
     code: '00001',
     name: 'Hà Thị Kim Thanh',
     department: 'Văn phòng',
@@ -22,6 +22,18 @@ test('tạo nhân sự duy nhất từ nhiều dòng chấm công và giữ mã 
     status: 'Đang làm việc',
     created_at: '2026-10-15T00:00:00.000Z',
   });
+});
+
+test('ID nhân sự mới mặc định là UUID hợp lệ thay vì mã emp_<code>', () => {
+  const plan = buildEmployeeSyncPlan([
+    { employee_code: '00001', employee_name: 'Hà Thị Kim Thanh', department: 'Văn phòng' },
+  ], []);
+
+  assert.match(
+    plan.rows[0].id,
+    /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+  );
+  assert.equal(plan.rows[0].code, '00001');
 });
 
 test('chỉ bổ sung trường còn thiếu và không ghi đè dữ liệu nhân sự hiện có', () => {

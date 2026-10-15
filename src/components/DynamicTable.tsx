@@ -193,6 +193,7 @@ const SortableColumnItem = ({
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidateTableMutation } from '@/lib/configCache';
 import { TimesheetSyncActions, TimesheetMonthPicker } from '@/modules/hrm';
+import { createEmployeeId } from '@/modules/hrm/timesheetEmployeeSync';
 import { ResetPasswordDialog } from '@/modules/system/system.users/index';
 import { getModuleCustomComponent } from '@/modules/registry';
 
@@ -1127,7 +1128,6 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
 
       fileEmpsMap.forEach((fileEmp, normCode) => {
         const existingEmp = empMap.get(normCode);
-        const cleanCode = fileEmp.code.replace(/[^a-zA-Z0-9]/g, '');
 
         if (existingEmp) {
           mappedEmpCount++;
@@ -1150,7 +1150,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
         } else {
           newEmpCount++;
           const newEmp = {
-            id: `emp_${cleanCode}`,
+            id: createEmployeeId(),
             code: fileEmp.code,
             name: (fileEmp.name && fileEmp.name !== '---' && fileEmp.name !== 'Nhân viên') ? fileEmp.name : `Nhân viên ${fileEmp.code}`,
             department: (fileEmp.department && fileEmp.department !== '-') ? fileEmp.department : 'Văn phòng',

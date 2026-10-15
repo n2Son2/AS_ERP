@@ -28,6 +28,19 @@ export interface EmployeeSyncPlan {
 
 const normalizeCode = (value: unknown) => String(value || '').trim().toUpperCase();
 
+export const createEmployeeId = () => {
+  if (typeof globalThis.crypto?.randomUUID === 'function') {
+    return globalThis.crypto.randomUUID();
+  }
+
+  // Fallback cho browser cũ; vẫn tạo đúng định dạng UUID v4 để PostgreSQL chấp nhận.
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, character => {
+    const random = Math.floor(Math.random() * 16);
+    const value = character === 'x' ? random : (random & 0x3) | 0x8;
+    return value.toString(16);
+  });
+};
+
 const isMissingName = (value: unknown) => {
   const name = String(value || '').trim();
   return !name || name === '---' || name === 'Nhân viên';
@@ -42,6 +55,7 @@ export function buildEmployeeSyncPlan(
   records: TimesheetEmployeeSource[],
   existingEmployees: ExistingEmployee[],
   createdAt = new Date().toISOString(),
+  createId = createEmployeeId,
 ): EmployeeSyncPlan {
   const existingByCode = new Map(
     existingEmployees
@@ -76,9 +90,8 @@ export function buildEmployeeSyncPlan(
   sourceByCode.forEach((source, normalizedCode) => {
     const existing = existingByCode.get(normalizedCode);
     if (!existing) {
-      const cleanCode = source.code.replace(/[^a-zA-Z0-9]/g, '');
       rows.push({
-        id: `emp_${cleanCode}`,
+        id: createId(),
         code: source.code,
         name: isMissingName(source.name) ? `Nhân viên ${source.code}` : source.name,
         department: isMissingDepartment(source.department) ? 'Văn phòng' : source.department,
