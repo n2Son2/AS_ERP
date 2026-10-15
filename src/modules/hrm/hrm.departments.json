@@ -1,0 +1,24 @@
+{
+  "id": "departments",
+  "title": "Bộ phận",
+  "table_name": "departments",
+  "icon": "Building2",
+  "columns": [
+    { "key": "code", "label": "Mã bộ phận", "type": "text" },
+    { "key": "name", "label": "Tên bộ phận", "type": "text" },
+    { "key": "description", "label": "Mô tả", "type": "text" },
+    { "key": "manager", "label": "Trưởng bộ phận", "type": "text" },
+    { "key": "status", "label": "Trạng thái", "type": "badge" }
+  ],
+  "fields": [
+    { "name": "code", "label": "Mã bộ phận", "type": "text", "required": true },
+    { "name": "name", "label": "Tên bộ phận", "type": "text", "required": true },
+    { "name": "description", "label": "Mô tả", "type": "textarea" },
+    { "name": "manager", "label": "Trưởng bộ phận", "type": "text" },
+    { "name": "status", "label": "Trạng thái", "type": "select", "options": ["Hoạt động", "Tạm dừng"], "defaultValue": "Hoạt động" }
+  ],
+  "filters": [
+    { "key": "status", "label": "Trạng thái", "type": "select", "options": ["Hoạt động", "Tạm dừng"] }
+  ],
+  "actions": ["add", "edit", "delete", "export"]
+}

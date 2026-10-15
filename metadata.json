@@ -1,0 +1,6 @@
+{
+  "name": "AS ERP Template",
+  "description": "Hệ thống ERP quản lý nhân sự, chấm công tự động, tính lương, báo cáo Excel dạng phiếu và sao lưu/khôi phục dữ liệu toàn diện JSON.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

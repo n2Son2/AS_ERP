@@ -1,0 +1,17 @@
+{
+  "id": "categories",
+  "title": "Quản lý nhóm hàng hóa",
+  "table_name": "categories",
+  "icon": "Package",
+  "columns": [
+    { "key": "code", "label": "Mã nhóm", "type": "text" },
+    { "key": "name", "label": "Tên nhóm", "type": "text" },
+    { "key": "description", "label": "Mô tả", "type": "text" }
+  ],
+  "fields": [
+    { "name": "code", "label": "Mã nhóm", "type": "text", "required": true },
+    { "name": "name", "label": "Tên nhóm", "type": "text", "required": true },
+    { "name": "description", "label": "Mô tả", "type": "text" }
+  ],
+  "actions": ["add", "edit", "delete", "export"]
+}

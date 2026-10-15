@@ -1,0 +1,43 @@
+{
+  "id": "timesheets",
+  "title": "Chấm công",
+  "table_name": "timesheets",
+  "icon": "Clock",
+  "custom_filter_component": "TimesheetMonthPicker",
+  "custom_actions_component": "TimesheetSyncActions",
+  "columns": [
+    { "key": "employee_code", "label": "Mã NV", "type": "text" },
+    { "key": "employee_name", "label": "Tên nhân viên", "type": "text" },
+    { "key": "department", "label": "Bộ phận", "type": "text" },
+    { "key": "work_date", "label": "Ngày chấm công", "type": "date" },
+    { "key": "day_of_week", "label": "Thứ", "type": "text" },
+    { "key": "check_in_1", "label": "Vào 1", "type": "text" },
+    { "key": "check_out_1", "label": "Ra 1", "type": "text" },
+    { "key": "late_minutes", "label": "Trễ (phút)", "type": "number" },
+    { "key": "early_minutes", "label": "Sớm (phút)", "type": "number" },
+    { "key": "work_day", "label": "Công", "type": "number" },
+    { "key": "total_hours", "label": "Tổng giờ", "type": "number" },
+    { "key": "overtime_1", "label": "T.Ca 1", "type": "number" },
+    { "key": "status", "label": "Trạng thái", "type": "badge" }
+  ],
+  "fields": [
+    { "name": "employee_code", "label": "Mã NV", "type": "text", "required": true },
+    { "name": "employee_name", "label": "Tên nhân viên", "type": "text", "required": true },
+    { "name": "department", "label": "Bộ phận", "type": "text" },
+    { "name": "work_date", "label": "Ngày chấm công", "type": "date", "required": true },
+    { "name": "day_of_week", "label": "Thứ", "type": "text" },
+    { "name": "check_in_1", "label": "Vào 1", "type": "text" },
+    { "name": "check_out_1", "label": "Ra 1", "type": "text" },
+    { "name": "late_minutes", "label": "Trễ (phút)", "type": "number" },
+    { "name": "early_minutes", "label": "Sớm (phút)", "type": "number" },
+    { "name": "work_day", "label": "Công", "type": "number" },
+    { "name": "total_hours", "label": "Tổng giờ", "type": "number" },
+    { "name": "overtime_1", "label": "T.Ca 1", "type": "number" },
+    { "name": "status", "label": "Trạng thái", "type": "select", "options": ["Đúng giờ", "Đi trễ", "Về sớm", "Vắng mặt", "Cuối tuần"], "defaultValue": "Đúng giờ" }
+  ],
+  "filters": [
+    { "key": "status", "label": "Trạng thái", "type": "select", "options": ["Đúng giờ", "Đi trễ", "Về sớm", "Vắng mặt", "Cuối tuần"] },
+    { "key": "department", "label": "Bộ phận", "type": "text" }
+  ],
+  "actions": ["add", "edit", "delete", "export", "upload"]
+}

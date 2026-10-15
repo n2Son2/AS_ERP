@@ -1,0 +1,84 @@
+{
+  "id": "users",
+  "title": "Quản lý người dùng",
+  "table_name": "users",
+  "icon": "User",
+  "columns": [
+    {
+      "key": "username",
+      "label": "Tên đăng nhập",
+      "type": "text"
+    },
+    {
+      "key": "full_name",
+      "label": "Họ và tên",
+      "type": "text"
+    },
+    {
+      "key": "email",
+      "label": "Email",
+      "type": "text"
+    },
+    {
+      "key": "role",
+      "label": "Vai trò",
+      "type": "badge"
+    },
+    {
+      "key": "status",
+      "label": "Trạng thái",
+      "type": "boolean"
+    }
+  ],
+  "fields": [
+    {
+      "name": "username",
+      "label": "Tên đăng nhập",
+      "type": "text",
+      "required": true,
+      "colSpan": 6,
+      "section": "Tài khoản"
+    },
+    {
+      "name": "email",
+      "label": "Email",
+      "type": "email",
+      "required": true,
+      "colSpan": 6,
+      "section": "Tài khoản"
+    },
+    {
+      "name": "full_name",
+      "label": "Họ và tên",
+      "type": "text",
+      "required": true,
+      "colSpan": 12,
+      "section": "Thông tin cá nhân"
+    },
+    {
+      "name": "role",
+      "label": "Vai trò",
+      "type": "select",
+      "sourceTable": "roles",
+      "sourceValue": "name",
+      "sourceLabel": "name",
+      "defaultValue": "User",
+      "colSpan": 6,
+      "section": "Phân quyền"
+    },
+    {
+      "name": "status",
+      "label": "Trạng thái hoạt động",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 6,
+      "section": "Phân quyền"
+    }
+  ],
+  "actions": [
+    "add",
+    "edit",
+    "delete",
+    "export"
+  ]
+}

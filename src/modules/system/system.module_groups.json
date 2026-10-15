@@ -1,0 +1,55 @@
+{
+  "id": "module_groups",
+  "title": "Quản lý nhóm chức năng",
+  "table_name": "module_groups",
+  "icon": "LayoutGrid",
+  "columns": [
+    {
+      "key": "id",
+      "type": "text",
+      "label": "Mã nhóm"
+    },
+    {
+      "key": "name",
+      "type": "text",
+      "label": "Tên nhóm"
+    },
+    {
+      "key": "description",
+      "type": "text",
+      "label": "Mô tả"
+    }
+  ],
+  "fields": [
+    {
+      "name": "id",
+      "type": "text",
+      "label": "Mã nhóm",
+      "required": true
+    },
+    {
+      "name": "name",
+      "type": "text",
+      "label": "Tên nhóm",
+      "required": true
+    },
+    {
+      "name": "description",
+      "type": "textarea",
+      "label": "Mô tả"
+    }
+  ],
+  "actions": [
+    "add",
+    "view",
+    "edit",
+    "delete",
+    "export",
+    "print"
+  ],
+  "show_on_sidebar": true,
+  "show_action_add": true,
+  "show_action_edit": true,
+  "show_action_delete": true,
+  "show_action_view": true
+}

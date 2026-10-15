@@ -1,0 +1,15 @@
+{
+  "id": "units",
+  "title": "Quản lý đơn vị tính",
+  "table_name": "units",
+  "icon": "Ruler",
+  "columns": [
+    { "key": "name", "label": "Tên đơn vị", "type": "text" },
+    { "key": "description", "label": "Mô tả", "type": "text" }
+  ],
+  "fields": [
+    { "name": "name", "label": "Tên đơn vị", "type": "text", "required": true },
+    { "name": "description", "label": "Mô tả", "type": "text" }
+  ],
+  "actions": ["add", "edit", "delete"]
+}

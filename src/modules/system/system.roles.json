@@ -1,0 +1,54 @@
+{
+  "id": "roles",
+  "title": "Quản lý vai trò",
+  "table_name": "roles_with_stats",
+  "icon": "LayoutGrid",
+  "columns": [
+    {
+      "key": "name",
+      "type": "text",
+      "label": "Tên vai trò"
+    },
+    {
+      "key": "function_count",
+      "type": "number",
+      "label": "Số chức năng"
+    },
+    {
+      "key": "permission_count",
+      "type": "number",
+      "label": "Số quyền hạn"
+    },
+    {
+      "key": "description",
+      "type": "text",
+      "label": "Mô tả"
+    }
+  ],
+  "fields": [
+    {
+      "name": "name",
+      "type": "text",
+      "label": "Tên vai trò",
+      "required": true
+    },
+    {
+      "name": "description",
+      "type": "textarea",
+      "label": "Mô tả"
+    }
+  ],
+  "actions": [
+    "add",
+    "view",
+    "edit",
+    "delete",
+    "export",
+    "print"
+  ],
+  "show_on_sidebar": true,
+  "show_action_add": true,
+  "show_action_edit": true,
+  "show_action_delete": true,
+  "show_action_view": true
+}

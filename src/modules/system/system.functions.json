@@ -1,0 +1,220 @@
+{
+  "id": "functions",
+  "title": "Quản lý chức năng",
+  "table_name": "app_functions",
+  "icon": "LayoutGrid",
+  "columns": [
+    {
+      "key": "title",
+      "label": "Tên chức năng",
+      "type": "text"
+    },
+    {
+      "key": "module_group",
+      "label": "Nhóm",
+      "type": "text"
+    },
+    {
+      "key": "table_name",
+      "label": "Bảng dữ liệu",
+      "type": "text"
+    },
+    {
+      "key": "show_on_sidebar",
+      "label": "Hiện Sidebar",
+      "type": "badge"
+    }
+  ],
+  "fields": [
+    {
+      "name": "id",
+      "label": "Mã định danh (ID)",
+      "type": "text",
+      "required": true,
+      "placeholder": "ví dụ: users",
+      "colSpan": 6,
+      "section": "Thông tin cơ bản"
+    },
+    {
+      "name": "title",
+      "label": "Tên chức năng",
+      "type": "text",
+      "required": true,
+      "colSpan": 6,
+      "section": "Thông tin cơ bản"
+    },
+    {
+      "name": "module_id",
+      "label": "Mã Module",
+      "type": "text",
+      "defaultValue": "system",
+      "colSpan": 4,
+      "section": "Thông tin cơ bản"
+    },
+    {
+      "name": "module_group",
+      "label": "Nhóm chức năng",
+      "type": "select",
+      "sourceTable": "module_groups",
+      "sourceLabel": "name",
+      "sourceValue": "name",
+      "defaultValue": "HỆ THỐNG",
+      "colSpan": 4,
+      "section": "Thông tin cơ bản"
+    },
+    {
+      "name": "icon",
+      "label": "Icon (Lucide)",
+      "type": "text",
+      "defaultValue": "FileText",
+      "colSpan": 4,
+      "section": "Thông tin cơ bản"
+    },
+    {
+      "name": "table_name",
+      "label": "Tên bảng Supabase",
+      "type": "text",
+      "required": true,
+      "section": "Dữ liệu & Cấu trúc"
+    },
+    {
+      "name": "show_on_sidebar",
+      "label": "Hiện trên Sidebar",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 4,
+      "section": "Hiển thị & Menu"
+    },
+    {
+      "name": "show_search",
+      "label": "Hiện ô tìm kiếm",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 4,
+      "section": "Hiển thị & Menu"
+    },
+    {
+      "name": "show_filter_date",
+      "label": "Hiện lọc ngày",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 4,
+      "section": "Bộ lọc"
+    },
+    {
+      "name": "date_filter_column",
+      "label": "Cột lọc ngày",
+      "type": "text",
+      "defaultValue": "created_at",
+      "colSpan": 8,
+      "section": "Bộ lọc",
+      "visibleWhen": {
+        "field": "show_filter_date",
+        "operator": "eq",
+        "value": true
+      }
+    },
+    {
+      "name": "show_filter_status",
+      "label": "Hiện lọc trạng thái",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 4,
+      "section": "Bộ lọc"
+    },
+    {
+      "name": "show_action_add",
+      "label": "Nút Thêm",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 2,
+      "section": "Thao tác (Actions)"
+    },
+    {
+      "name": "show_action_view",
+      "label": "Nút Xem",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 2,
+      "section": "Thao tác (Actions)"
+    },
+    {
+      "name": "show_action_edit",
+      "label": "Nút Sửa",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 2,
+      "section": "Thao tác (Actions)"
+    },
+    {
+      "name": "show_action_delete",
+      "label": "Nút Xóa",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 2,
+      "section": "Thao tác (Actions)"
+    },
+    {
+      "name": "show_action_export",
+      "label": "Nút Xuất Excel",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 2,
+      "section": "Thao tác (Actions)"
+    },
+    {
+      "name": "show_action_print",
+      "label": "Nút In",
+      "type": "boolean",
+      "defaultValue": true,
+      "colSpan": 2,
+      "section": "Thao tác (Actions)"
+    },
+    {
+      "name": "columns",
+      "label": "Cấu hình cột (JSON)",
+      "type": "textarea",
+      "required": true,
+      "section": "Cấu hình nâng cao"
+    },
+    {
+      "name": "fields",
+      "label": "Cấu hình form (JSON)",
+      "type": "textarea",
+      "required": true,
+      "section": "Cấu hình nâng cao"
+    },
+    {
+      "name": "filters",
+      "label": "Cấu hình bộ lọc (JSON)",
+      "type": "textarea",
+      "section": "Cấu hình nâng cao"
+    },
+    {
+      "name": "actions",
+      "label": "Thao tác tùy chỉnh (JSON)",
+      "type": "textarea",
+      "section": "Cấu hình nâng cao"
+    },
+    {
+      "name": "sql_schema",
+      "label": "SQL Schema (Supabase)",
+      "type": "textarea",
+      "section": "Cấu hình nâng cao",
+      "placeholder": "Câu lệnh CREATE TABLE, INDEX..."
+    }
+  ],
+  "actions": [
+    "add",
+    "view",
+    "edit",
+    "delete",
+    "export",
+    "print"
+  ],
+  "show_on_sidebar": true,
+  "show_action_add": true,
+  "show_action_edit": true,
+  "show_action_delete": true,
+  "show_action_view": true
+}

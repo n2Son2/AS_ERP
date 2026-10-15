@@ -1,0 +1,29 @@
+{
+  "id": "transactions",
+  "title": "Thu chi",
+  "table_name": "transactions",
+  "icon": "ArrowLeftRight",
+  "columns": [
+    { "key": "code", "label": "Mã giao dịch", "type": "text" },
+    { "key": "date", "label": "Ngày giao dịch", "type": "date" },
+    { "key": "type", "label": "Loại", "type": "badge" },
+    { "key": "account", "label": "Tài khoản", "type": "text" },
+    { "key": "category", "label": "Danh mục", "type": "text" },
+    { "key": "amount", "label": "Số tiền", "type": "number" },
+    { "key": "status", "label": "Trạng thái", "type": "badge" }
+  ],
+  "fields": [
+    { "name": "code", "label": "Mã giao dịch", "type": "text", "required": true },
+    { "name": "date", "label": "Ngày giao dịch", "type": "date", "required": true },
+    { "name": "type", "label": "Loại", "type": "select", "options": ["Thu", "Chi", "Chuyển quỹ"], "required": true },
+    { "name": "account", "label": "Tài khoản", "type": "text", "required": true },
+    { "name": "category", "label": "Danh mục", "type": "text" },
+    { "name": "amount", "label": "Số tiền", "type": "number", "required": true },
+    { "name": "status", "label": "Trạng thái", "type": "select", "options": ["Chờ duyệt", "Hoàn thành", "Đã hủy"], "defaultValue": "Chờ duyệt" }
+  ],
+  "filters": [
+    { "key": "type", "label": "Loại", "type": "select", "options": ["Thu", "Chi", "Chuyển quỹ"] },
+    { "key": "status", "label": "Trạng thái", "type": "select", "options": ["Chờ duyệt", "Hoàn thành", "Đã hủy"] }
+  ],
+  "actions": ["add", "edit", "delete", "export"]
+}

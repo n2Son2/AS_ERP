@@ -1,0 +1,31 @@
+{
+  "id": "employees",
+  "title": "Nhân sự",
+  "table_name": "employees",
+  "icon": "UserCheck",
+  "columns": [
+    { "key": "code", "label": "Mã NV", "type": "text" },
+    { "key": "name", "label": "Họ và tên", "type": "text" },
+    { "key": "department", "label": "Bộ phận", "type": "text" },
+    { "key": "position", "label": "Chức vụ", "type": "text" },
+    { "key": "phone", "label": "Số điện thoại", "type": "text" },
+    { "key": "email", "label": "Email", "type": "text" },
+    { "key": "join_date", "label": "Ngày vào làm", "type": "date" },
+    { "key": "status", "label": "Trạng thái", "type": "badge" }
+  ],
+  "fields": [
+    { "name": "code", "label": "Mã NV", "type": "text", "required": true },
+    { "name": "name", "label": "Họ và tên", "type": "text", "required": true },
+    { "name": "department", "label": "Bộ phận", "type": "text" },
+    { "name": "position", "label": "Chức vụ", "type": "text" },
+    { "name": "phone", "label": "Số điện thoại", "type": "text" },
+    { "name": "email", "label": "Email", "type": "text" },
+    { "name": "join_date", "label": "Ngày vào làm", "type": "date" },
+    { "name": "status", "label": "Trạng thái", "type": "select", "options": ["Đang làm việc", "Nghỉ việc", "Tạm hoãn"], "defaultValue": "Đang làm việc" }
+  ],
+  "filters": [
+    { "key": "status", "label": "Trạng thái", "type": "select", "options": ["Đang làm việc", "Nghỉ việc", "Tạm hoãn"] },
+    { "key": "department", "label": "Bộ phận", "type": "text" }
+  ],
+  "actions": ["add", "edit", "delete", "export"]
+}
