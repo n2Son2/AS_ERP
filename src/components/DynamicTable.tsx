@@ -20,7 +20,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Filter,
-  ArrowLeft,
   Printer,
   LayoutGrid,
   Eye,
@@ -31,8 +30,6 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
-  Calendar,
-  Tag,
   Settings,
   ShieldCheck,
   TriangleAlert,
@@ -91,8 +88,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
-import { SearchableSelect } from './SearchableSelect';
+import {
+  CompactTableFilters,
+  type CompactFilterDefinition,
+  type CompactFilterValue,
+} from './CompactTableFilters';
 import {
   Dialog,
   DialogContent,
@@ -102,6 +102,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import * as XLSX from 'xlsx-js-style';
+
+const MONTH_FILTER_KEY = '__month';
+const DATE_FILTER_KEY = '__date_range';
 
 // DND Kit imports
 import {
@@ -192,7 +195,7 @@ const SortableColumnItem = ({
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidateTableMutation } from '@/lib/configCache';
-import { TimesheetSyncActions, TimesheetMonthPicker } from '@/modules/hrm';
+import { TimesheetSyncActions } from '@/modules/hrm';
 import { createEmployeeId } from '@/modules/hrm/timesheetEmployeeSync';
 import { ResetPasswordDialog } from '@/modules/system/system.users/index';
 import { getModuleCustomComponent } from '@/modules/registry';
@@ -229,6 +232,9 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
   });
   // isSyncingSupabase, deleteMonthConfirmOpen, isDeletingMonth → moved to TimesheetSyncActions
   const [dynamicFilters, setDynamicFilters] = useState<Record<string, string>>({});
+  const [enabledFilterKeys, setEnabledFilterKeys] = useState<string[]>(() =>
+    isTimesheetTable && !CustomFilterComponent ? [MONTH_FILTER_KEY] : []
+  );
   const [resetPasswordEmail, setResetPasswordEmail] = useState<string | null>(null);
   const [tsViewMode, setTsViewMode] = useState<'summary' | 'detail'>('summary');
   const [selectedEmpModal, setSelectedEmpModal] = useState<any | null>(null);
@@ -1291,13 +1297,8 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
   const resetFilters = () => {
     setDateFrom('');
     setDateTo('');
-    if (isTimesheetTable) {
-      setSelectedMonth(getPreviousMonthStr());
-    } else {
-      setSelectedMonth('');
-    }
+    setSelectedMonth('');
     setDynamicFilters({});
-    setSearchTerm('');
   };
 
   const handleResetPassword = (emailInput: string) => {
@@ -1310,8 +1311,6 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
     const normalizedEmail = emailInput.includes('@') ? emailInput : `${emailInput}@sonanh.com`;
     setResetPasswordEmail(normalizedEmail);
   };
-
-  const hasActiveFilters = !!(dateFrom || dateTo || Object.values(dynamicFilters).some(v => v) || searchTerm);
 
   const renderCell = (item: any, column: any) => {
     const value = item[column.key];
@@ -1378,6 +1377,73 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
     ? jsonDateFilter.visible !== false 
     : config.show_filter_date !== false;
 
+  const compactFilterDefinitions = useMemo<CompactFilterDefinition[]>(() => {
+    const tableColumns = new Set(config.columns.map((column) => column.key));
+    const definitions: CompactFilterDefinition[] = [];
+
+    if (isTimesheetTable && !CustomFilterComponent) {
+      definitions.push({ key: MONTH_FILTER_KEY, label: 'Thời gian', type: 'month' });
+    } else if (hasDateRangeFilter && !CustomFilterComponent) {
+      definitions.push({
+        key: DATE_FILTER_KEY,
+        label: jsonDateFilter?.label || 'Thời gian',
+        type: 'date_range',
+      });
+    }
+
+    config.filters
+      ?.filter((filter) => filter.type !== 'date_range' && filter.visible !== false)
+      .filter((filter) => tableColumns.has(filter.key) || filter.key === 'id' || filter.key === 'created_at')
+      .forEach((filter) => definitions.push({
+        key: filter.key,
+        label: filter.label,
+        type: filter.type,
+        options: filter.options,
+      }));
+
+    return definitions;
+  }, [CustomFilterComponent, config.columns, config.filters, hasDateRangeFilter, isTimesheetTable, jsonDateFilter?.label]);
+
+  const compactFilterValues = useMemo<Record<string, CompactFilterValue>>(() => ({
+    ...dynamicFilters,
+    [DATE_FILTER_KEY]: { from: dateFrom, to: dateTo },
+    [MONTH_FILTER_KEY]: selectedMonth,
+  }), [dateFrom, dateTo, dynamicFilters, selectedMonth]);
+
+  useEffect(() => {
+    setEnabledFilterKeys(isTimesheetTable && !CustomFilterComponent ? [MONTH_FILTER_KEY] : []);
+  }, [config.id, CustomFilterComponent, isTimesheetTable]);
+
+  const handleCompactFilterValueChange = (key: string, value: CompactFilterValue) => {
+    setPage(1);
+    if (key === DATE_FILTER_KEY && typeof value !== 'string') {
+      setDateFrom(value.from);
+      setDateTo(value.to);
+      return;
+    }
+    if (key === MONTH_FILTER_KEY && typeof value === 'string') {
+      setSelectedMonth(value);
+      return;
+    }
+    if (typeof value === 'string') {
+      setDynamicFilters((current) => ({ ...current, [key]: value }));
+    }
+  };
+
+  const clearCompactFilter = (key: string) => {
+    setPage(1);
+    if (key === DATE_FILTER_KEY) {
+      setDateFrom('');
+      setDateTo('');
+      return;
+    }
+    if (key === MONTH_FILTER_KEY) {
+      setSelectedMonth('');
+      return;
+    }
+    setDynamicFilters((current) => ({ ...current, [key]: '' }));
+  };
+
   // Admin always has full permissions
   const userRole = 'Admin'; 
   const isAdmin = userRole === 'Admin';
@@ -1389,8 +1455,6 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
   const show_action_export = isAdmin || config.show_action_export !== false;
   const show_action_print = isAdmin || config.show_action_print !== false;
   const show_action_upload = config.id === 'timesheets' || config.table_name === 'timesheets' || (config.actions as string[])?.includes('upload');
-  const show_filter_date = config.show_filter_date !== false;
-  const show_filter_status = config.show_filter_status !== false;
   const show_search = config.show_search !== false;
 
   return (
@@ -1403,24 +1467,8 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
         </div>
       )}
       {/* Advanced Toolbar */}
-      <div className="no-print toolbar-container space-y-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="gap-2 h-10"
-            onClick={() => {
-              if (isTimesheetTable) {
-                setTsViewMode('summary');
-                setSearchTerm('');
-                setPage(1);
-              }
-            }}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Quay lại
-          </Button>
-
+      <div className="no-print toolbar-container">
+        <div className="flex flex-wrap items-center gap-2">
           {(config.table_name === 'timesheets' || config.id === 'timesheets') && (
             <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
               <Button 
@@ -1449,17 +1497,31 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
             </div>
           )}
 
-          {show_search && (
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Tìm kiếm . . ." 
-                className="pl-10 h-10 bg-slate-50/50 border-slate-200"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+          {CustomFilterComponent && (
+            <CustomFilterComponent
+              value={selectedMonth}
+              onChange={setSelectedMonth}
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+              config={config}
+            />
           )}
+
+          <CompactTableFilters
+            searchTerm={searchTerm}
+            onSearchTermChange={(value) => {
+              setSearchTerm(value);
+              setPage(1);
+            }}
+            showSearch={show_search}
+            filters={compactFilterDefinitions}
+            enabledFilterKeys={enabledFilterKeys}
+            onEnabledFilterKeysChange={setEnabledFilterKeys}
+            values={compactFilterValues}
+            onValueChange={handleCompactFilterValueChange}
+            onClearFilter={clearCompactFilter}
+            onClearAll={resetFilters}
+          />
 
           {selectedIds.length > 0 && show_action_delete && (
             <Button 
@@ -1471,18 +1533,6 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
             >
               <Trash2 className="h-4 w-4" />
               Xóa ({selectedIds.length})
-            </Button>
-          )}
-
-          {hasActiveFilters && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 gap-2 h-10 border border-rose-100"
-              onClick={resetFilters}
-            >
-              <X className="h-4 w-4" />
-              Xóa bộ lọc
             </Button>
           )}
 
@@ -1648,104 +1698,6 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
           </div>
         </div>
 
-        {/* Filters Row */}
-        {(CustomFilterComponent || isTimesheetTable || hasDateRangeFilter || (config.filters && config.filters.length > 0)) && (
-          <div className="flex flex-wrap items-center gap-3 filters-container no-print">
-            {CustomFilterComponent ? (
-              <CustomFilterComponent
-                value={selectedMonth}
-                onChange={setSelectedMonth}
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                config={config}
-              />
-            ) : isTimesheetTable ? (
-              <TimesheetMonthPicker
-                value={selectedMonth}
-                onChange={setSelectedMonth}
-              />
-            ) : (
-              hasDateRangeFilter && (
-                <div className="flex items-center gap-2 bg-white border rounded-lg p-1 pr-2">
-                  <div className="px-3 text-xs font-semibold text-slate-500 border-r border-slate-100 flex items-center gap-2">
-                    <Calendar className="h-3.5 w-3.5" />
-                    <span>{config.filters?.find(f => f.type === 'date_range')?.label || 'Thời gian'}</span>
-                  </div>
-                  <div className="relative">
-                    <Input 
-                      type="date" 
-                      className="h-8 w-36 border-none focus-visible:ring-0 shadow-none text-xs" 
-                      value={dateFrom}
-                      onChange={(e) => setDateFrom(e.target.value)}
-                    />
-                  </div>
-                  <span className="text-slate-300">→</span>
-                  <div className="relative">
-                    <Input 
-                      type="date" 
-                      className="h-8 w-36 border-none focus-visible:ring-0 shadow-none text-xs" 
-                      value={dateTo}
-                      onChange={(e) => setDateTo(e.target.value)}
-                    />
-                  </div>
-                  {(dateFrom || dateTo) && (
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-6 w-6 text-slate-400 hover:text-rose-500"
-                      onClick={() => { setDateFrom(''); setDateTo(''); }}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  )}
-                </div>
-              )
-            )}
-
-            {config.filters?.filter(f => f.type !== 'date_range' && f.visible !== false).map((filter) => {
-              // Hide filter if columns are not in config.columns (safeguard)
-              const tableColumns = config.columns.map(c => c.key);
-              if (!tableColumns.includes(filter.key) && filter.key !== 'id' && filter.key !== 'created_at') {
-                return null;
-              }
-
-              return (
-                <div key={filter.key} className="relative flex items-center">
-                  {filter.type === 'select' ? (
-                  <SearchableSelect 
-                    options={filter.options || []}
-                    value={dynamicFilters[filter.key] || ''}
-                    onChange={(val) => setDynamicFilters(prev => ({ ...prev, [filter.key]: val }))}
-                    placeholder={filter.label}
-                    className="w-40"
-                    icon={<Tag className="h-4 w-4 text-slate-400" />}
-                  />
-                ) : (
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      placeholder={filter.label}
-                      className="pl-10 h-10 w-40"
-                      value={dynamicFilters[filter.key] || ''}
-                      onChange={(e) => setDynamicFilters(prev => ({ ...prev, [filter.key]: e.target.value }))}
-                    />
-                  </div>
-                )}
-                {dynamicFilters[filter.key] && (
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="absolute -right-2 -top-2 h-5 w-5 bg-white border shadow-sm rounded-full text-slate-400 hover:text-rose-50"
-                    onClick={() => setDynamicFilters(prev => ({ ...prev, [filter.key]: '' }))}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
-                )}
-              </div>
-            );
-          })}
-          </div>
-        )}
       </div>
 
       {/* Table Section */}
