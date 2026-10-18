@@ -132,15 +132,20 @@ export function CompactTableFilters({
 
   return (
     <>
-      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5 rounded-lg border bg-card p-1.5 shadow-xs">
+      <div
+        className="flex min-h-10 min-w-0 flex-1 flex-wrap items-center gap-1.5 rounded-lg border bg-card px-1.5 shadow-xs transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 max-md:min-h-11"
+        data-bd-inspect-label="Tìm kiếm trong danh sách"
+        data-bd-group="list-toolbar"
+        data-bd-compare-size="height"
+      >
         {showSearch && (
-          <div className="relative min-w-[210px] flex-1">
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <div className="relative h-[38px] min-w-[210px] flex-1 max-md:h-[42px]">
+            <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
               aria-label="Tìm kiếm trong danh sách"
               placeholder="Tìm kiếm…"
-              className="h-8 border-0 bg-transparent pl-8 shadow-none focus-visible:ring-0"
+              className="h-full !min-h-0 border-0 bg-transparent pl-8 shadow-none focus-visible:ring-0"
               value={searchTerm}
               onChange={(event) => onSearchTermChange(event.target.value)}
             />
@@ -256,7 +261,13 @@ export function CompactTableFilters({
         )}
       </div>
 
-      <Button variant="outline" className="shrink-0" onClick={() => setDialogState(true)}>
+      <Button
+        variant="outline"
+        className="h-10 shrink-0"
+        data-bd-group="list-toolbar"
+        data-bd-compare-size="height"
+        onClick={() => setDialogState(true)}
+      >
         <Filter data-icon="inline-start" />
         Bộ lọc
         <Badge variant="secondary" className="min-w-5 justify-center px-1.5">{activeFilterCount}</Badge>

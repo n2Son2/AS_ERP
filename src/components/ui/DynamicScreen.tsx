@@ -69,21 +69,38 @@ export const DynamicScreen: React.FC<DynamicScreenProps> = ({ config, moduleTitl
     <div className="space-y-6">
       {source === 'json' && config.table_name === 'app_functions' &&
         <p className="text-sm text-slate-500">Ứng dụng đang dùng cấu hình JSON. Các bản ghi bên dưới chỉ áp dụng khi chọn nguồn cấu hình Supabase trong Cài đặt.</p>}
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Home className="h-4 w-4" />
-        <ChevronRight className="h-4 w-4" />
-        <span>{moduleTitle}</span>
-        <ChevronRight className="h-4 w-4" />
-        <span className="text-blue-600 font-medium">{config.title}</span>
-      </div>
+      {/* Screen context and view switcher */}
+      <div
+        className="flex min-w-0 flex-nowrap items-center justify-between gap-3"
+        data-bd-group="screen-header"
+        data-bd-align-group="screen-header"
+      >
+        <nav aria-label="Đường dẫn màn hình" className="min-w-0 flex-1 text-sm text-muted-foreground">
+          <ol className="flex min-w-0 items-center gap-1.5">
+            <li className="shrink-0">
+              <Home className="size-4" aria-hidden="true" />
+            </li>
+            <li className="shrink-0" aria-hidden="true">
+              <ChevronRight className="size-4" />
+            </li>
+            <li className="hidden min-w-0 sm:block">
+              <span className="block truncate">{moduleTitle}</span>
+            </li>
+            <li className="hidden shrink-0 sm:block" aria-hidden="true">
+              <ChevronRight className="size-4" />
+            </li>
+            <li className="min-w-0">
+              <span className="block truncate font-medium text-foreground" aria-current="page">
+                {config.title}
+              </span>
+            </li>
+          </ol>
+        </nav>
 
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <Tabs defaultValue="list" className="w-auto">
-          <TabsList className="bg-white border">
-            <TabsTrigger value="list" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600">Danh sách</TabsTrigger>
-            <TabsTrigger value="stats" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600">Thống kê</TabsTrigger>
+        <Tabs defaultValue="list" className="w-auto shrink-0">
+          <TabsList className="!h-11 border border-border/70 bg-muted p-1 shadow-xs sm:!h-9" aria-label="Chế độ hiển thị">
+            <TabsTrigger value="list" className="px-3">Danh sách</TabsTrigger>
+            <TabsTrigger value="stats" className="px-3">Thống kê</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

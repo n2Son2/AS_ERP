@@ -1539,7 +1539,14 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
           <div className="flex items-center gap-2 ml-auto">
             <Popover>
               <PopoverTrigger render={
-                <Button variant="outline" size="icon" aria-label="Cột hiển thị" className="h-10 w-10 bg-blue-600 text-white hover:bg-blue-700 border-none" />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label="Cột hiển thị"
+                  data-bd-group="list-toolbar"
+                  data-bd-compare-size="height"
+                  className="size-10 max-md:size-11"
+                />
               }>
                   <LayoutGrid className="h-5 w-5" />
               </PopoverTrigger>
@@ -1548,7 +1555,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                   <span className="text-sm font-semibold">Cột hiển thị</span>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground">{visibleColumns.length}/{config.columns.length}</span>
-                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={resetColumns}>
+                    <Button variant="ghost" size="icon" className="size-6" aria-label="Đặt lại cột hiển thị" onClick={resetColumns}>
                       <RotateCcw className="h-3 w-3" />
                     </Button>
                   </div>
@@ -1669,28 +1676,48 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button variant="outline" className="gap-2 h-10" onClick={handleExportExcel}>
+                <Button
+                  variant="outline"
+                  className="gap-2 h-10"
+                  data-bd-group="list-toolbar"
+                  data-bd-compare-size="height"
+                  onClick={handleExportExcel}
+                >
                   <FileDown className="h-4 w-4" />
                   Xuất Excel
                 </Button>
               )
             )}
             {show_action_print && (
-              <Button variant="outline" size="icon" className="h-10 w-10" onClick={handlePrint}>
+              <Button
+                variant="outline"
+                size="icon"
+                className="size-10 max-md:size-11"
+                aria-label="In danh sách"
+                data-bd-group="list-toolbar"
+                data-bd-compare-size="height"
+                onClick={handlePrint}
+              >
                 <Printer className="h-4 w-4" />
               </Button>
             )}
             {onConfigFilter && <Button 
               variant="outline" 
               size="icon" 
-              className="h-10 w-10 text-slate-600 border-slate-200 hover:bg-slate-50"
+              className="size-10 text-slate-600 border-slate-200 hover:bg-slate-50 max-md:size-11"
+              aria-label="Cấu hình bộ lọc màn hình"
               title="Cấu hình bộ lọc màn hình"
               onClick={() => onConfigFilter?.(config)}
             >
               <Settings className="h-4 w-4" />
             </Button>}
             {show_action_add && (
-              <Button onClick={onAdd} className="bg-blue-600 hover:bg-blue-700 gap-2 h-10">
+              <Button
+                onClick={onAdd}
+                className="h-10 gap-2"
+                data-bd-group="list-toolbar"
+                data-bd-compare-size="height"
+              >
                 <Plus className="h-4 w-4" />
                 Thêm
               </Button>
