@@ -4,8 +4,10 @@ import { BrowserRouter as Router, Routes, Route, useParams, Navigate, Link } fro
 import { Layout } from './components/Layout';
 import { APP_CONFIG } from './config';
 import { Toaster } from './components/ui/sonner';
-import { Settings, Loader2, ArrowRight } from 'lucide-react';
+import { Loader2, ArrowRight, Blocks, Database, CircleCheck } from 'lucide-react';
 import { Button } from './components/ui/button';
+import { Badge } from './components/ui/badge';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import { Login } from './components/Login';
 import { supabase } from './lib/supabase';
 import { ConfigScopeContext, ConfigSourceContext, useScreenConfig, useModuleNavigation, usePrefetchScreen } from './lib/useScreenConfig';
@@ -48,17 +50,41 @@ const DashboardHome = () => {
   const { data: navigation, isError } = useModuleNavigation();
   const prefetchScreen = usePrefetchScreen();
   const modules = mergeNavigation(APP_CONFIG, navigation ?? []);
-  return <div className="mx-auto max-w-7xl space-y-8">
-    <section className="erp-welcome rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">AS ERP / Tổng quan</p>
-      <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Một không gian. Mọi hoạt động.</h1>
-      <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Chào mừng trở lại. Truy cập các phân hệ và quản lý công việc của bạn từ một nơi tập trung.</p>
-      <div className="mt-6 flex flex-wrap gap-3"><span className="rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-800">{modules.length} phân hệ</span><span className="rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-700">{modules.reduce((total, module) => total + module.screens.length, 0)} màn hình trong menu</span></div>
+  const screenCount = modules.reduce((total, module) => total + module.screens.length, 0);
+
+  return <div className="mx-auto flex max-w-[1440px] flex-col gap-3">
+    <section className="grid gap-3 md:grid-cols-3" aria-label="Tổng quan hệ thống">
+      <Card className="erp-summary-card md:col-span-2">
+        <CardHeader>
+          <CardTitle className="text-xl">Không gian vận hành</CardTitle>
+          <CardDescription>Truy cập nhanh các phân hệ đang được cấu hình cho hệ thống.</CardDescription>
+          <CardAction><Badge variant="secondary"><CircleCheck data-icon="inline-start" /> Sẵn sàng</Badge></CardAction>
+        </CardHeader>
+        <CardContent className="grid grid-cols-2 gap-3 sm:max-w-md">
+          <div><p className="text-2xl font-semibold tabular-nums">{modules.length}</p><p className="text-xs text-muted-foreground">Phân hệ</p></div>
+          <div><p className="text-2xl font-semibold tabular-nums">{screenCount}</p><p className="text-xs text-muted-foreground">Màn hình</p></div>
+        </CardContent>
+      </Card>
+      <Card className="erp-summary-card">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Database className="size-4" /> Cấu hình</CardTitle>
+          <CardDescription>Quản lý kết nối, nguồn dữ liệu và sao lưu.</CardDescription>
+        </CardHeader>
+        <CardContent><Link to="/settings" className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-border px-3 text-sm font-medium hover:bg-muted">Mở cài đặt <ArrowRight className="size-4" /></Link></CardContent>
+      </Card>
     </section>
-    <section aria-labelledby="modules-heading"><div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><h2 id="modules-heading" className="text-lg font-semibold text-slate-900">Phân hệ làm việc</h2><p className="mt-1 text-sm text-slate-500">Chọn chức năng để bắt đầu.</p></div><span className="text-xs text-slate-500">Menu theo cấu hình hệ thống</span></div>
-    {isError && <p role="status" className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">Chưa cập nhật được menu. Đang hiển thị cấu hình đã có.</p>}
-    <div className="grid gap-4 md:grid-cols-2">{modules.map((module, index) => <article key={module.id} className="erp-module rounded-xl border border-slate-200 bg-white p-5"><div className="mb-4 flex items-center justify-between"><span className="flex size-10 items-center justify-center rounded-xl bg-blue-50 text-sm font-bold text-blue-700">{String(index + 1).padStart(2, '0')}</span><span className="text-xs text-slate-500">{module.screens.length} chức năng</span></div><h3 className="mb-3 text-lg font-semibold text-slate-900">{module.title}</h3><div className="space-y-1">{module.screens.map(screen => <Link key={screen.id} to={`/screen/${module.id}/${screen.id}`} onFocus={() => prefetchScreen(screen.id)} onMouseEnter={() => prefetchScreen(screen.id)} className="group flex min-h-11 items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-blue-50 hover:text-blue-700"><span>{screen.title}</span><ArrowRight aria-hidden="true" className="size-4 shrink-0 text-slate-400 group-hover:text-blue-600" /></Link>)}{!module.screens.length && <p className="py-2 text-sm text-slate-500">Chưa có màn hình trong menu.</p>}</div></article>)}</div></section>
-    <section className="flex flex-col justify-between gap-4 rounded-xl border border-blue-100 bg-blue-50/60 p-5 sm:flex-row sm:items-center"><div className="flex items-start gap-3"><Settings aria-hidden="true" className="mt-1 size-5 shrink-0 text-blue-700" /><div><h2 className="font-semibold text-slate-900">Thiết lập không gian làm việc</h2><p className="mt-1 text-sm text-slate-600">Quản lý kết nối dữ liệu, nguồn cấu hình và sao lưu hệ thống.</p></div></div><Button asChild variant="outline" className="shrink-0 bg-white"><Link to="/settings">Mở cài đặt<ArrowRight aria-hidden="true" /></Link></Button></section>
+
+    <section aria-labelledby="modules-heading" className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-2 px-1"><div><h2 id="modules-heading" className="text-base font-semibold">Phân hệ làm việc</h2><p className="text-xs text-muted-foreground">Chọn một chức năng để bắt đầu.</p></div><Badge variant="outline"><Blocks data-icon="inline-start" /> {screenCount} chức năng</Badge></div>
+      {isError && <p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">Chưa cập nhật được menu. Đang hiển thị cấu hình đã có.</p>}
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{modules.map(module => <Card key={module.id} className="erp-module-card">
+        <CardHeader>
+          <CardTitle>{module.title}</CardTitle>
+          <CardDescription>{module.screens.length} chức năng khả dụng</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-1">{module.screens.map(screen => <Link key={screen.id} to={`/screen/${module.id}/${screen.id}`} onFocus={() => prefetchScreen(screen.id)} onMouseEnter={() => prefetchScreen(screen.id)} className="group flex min-h-10 items-center justify-between gap-3 rounded-lg px-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"><span className="truncate">{screen.title}</span><ArrowRight aria-hidden="true" className="size-4 shrink-0 opacity-40 group-hover:opacity-100" /></Link>)}{!module.screens.length && <p className="py-2 text-sm text-muted-foreground">Chưa có màn hình trong menu.</p>}</CardContent>
+      </Card>)}</div>
+    </section>
   </div>;
 };
 

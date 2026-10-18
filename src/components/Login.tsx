@@ -90,11 +90,11 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   return (
     <div className="erp-login flex min-h-screen bg-white">
       {/* Left Panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-slate-950 relative overflow-hidden flex-col justify-center px-16">
+      <div className="relative hidden overflow-hidden bg-slate-950 px-16 lg:flex lg:w-1/2 lg:flex-col lg:justify-center">
         {/* Background blobs/patterns */}
         <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
-          <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600 rounded-full blur-[120px]" />
-          <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-600 rounded-full blur-[120px]" />
+          <div className="absolute top-[-10%] right-[-10%] size-[500px] rounded-full bg-blue-600 blur-[120px]" />
+          <div className="absolute bottom-[-10%] left-[-10%] size-[500px] rounded-full bg-indigo-600 blur-[120px]" />
         </div>
 
         <div className="relative z-10 space-y-12 py-12">
@@ -111,7 +111,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           <div className="space-y-6">
             {features.map((feature, i) => (
               <div key={i} className="flex items-center gap-4 group">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-500 transition-colors group-hover:bg-blue-500 group-hover:text-white">
+                <div className="flex size-6 items-center justify-center rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-500 transition-colors group-hover:bg-blue-500 group-hover:text-white">
                   <Check className="h-3.5 w-3.5" />
                 </div>
                 <span className="text-slate-300 font-medium">{feature}</span>
@@ -130,9 +130,9 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
-            <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-between gap-2 text-xs text-blue-900">
+            <div className="flex items-center justify-between gap-2 rounded-xl border border-blue-100 bg-blue-50 p-3 text-xs text-blue-900">
               <div>
-                <span className="font-bold block text-blue-950">Tài khoản Super Admin:</span>
+                <span className="block font-bold text-blue-950">Tài khoản Super Admin:</span>
                 <span className="font-mono text-slate-700">phuonganh</span> / <span className="font-mono text-slate-700">@tho2532024</span>
               </div>
               <button
@@ -142,7 +142,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                   setPassword('@tho2532024');
                   toast.success('Đã điền tự động tài khoản phuonganh!');
                 }}
-                className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm shrink-0 transition-colors"
+                className="shrink-0 rounded-lg bg-blue-600 px-2.5 py-1.5 font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
               >
                 Nhập nhanh
               </button>
@@ -159,7 +159,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="h-12 border-slate-200 focus:ring-blue-500/20 focus:border-blue-500"
+                className="h-12 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20"
               />
             </div>
 
@@ -181,7 +181,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-12 pr-10 border-slate-200 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="h-12 border-slate-200 pr-10 focus:border-blue-500 focus:ring-blue-500/20"
                 />
                 <button
                   type="button"
@@ -199,7 +199,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
               <input 
                 type="checkbox" 
                 id="remember" 
-                className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" 
+                className="size-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
               />
               <label htmlFor="remember" className="text-sm text-slate-600 cursor-pointer">
                 Ghi nhớ đăng nhập
@@ -209,7 +209,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-lg shadow-blue-500/25 gap-2 transition-all"
+              className="h-12 w-full gap-2 bg-blue-600 text-base font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-700"
             >
               {loading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -259,7 +259,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
           <p className="text-center text-sm text-slate-500">
             Bạn chưa có tài khoản?{' '}
-            <button className="text-blue-600 font-bold hover:underline">Đăng ký ngay</button>
+            <button className="font-bold text-blue-600 hover:underline">Đăng ký ngay</button>
           </p>
 
           <div className="pt-8 text-center">
