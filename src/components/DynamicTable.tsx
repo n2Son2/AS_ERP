@@ -17,8 +17,6 @@ import {
   Edit2, 
   Trash2, 
   MoreVertical,
-  ChevronLeft,
-  ChevronRight,
   Filter,
   Printer,
   LayoutGrid,
@@ -199,6 +197,8 @@ import { TimesheetSyncActions } from '@/modules/hrm';
 import { createEmployeeId } from '@/modules/hrm/timesheetEmployeeSync';
 import { ResetPasswordDialog } from '@/modules/system/system.users/index';
 import { getModuleCustomComponent } from '@/modules/registry';
+import { TablePagination } from './TablePagination';
+import { cn } from '@/lib/utils';
 
 export const DynamicTable: React.FC<DynamicTableProps> = ({ 
   config, 
@@ -1729,9 +1729,14 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
 
       {/* Table Section */}
       {(config.table_name === 'timesheets' || config.id === 'timesheets') && tsViewMode === 'summary' ? (
-        <div className="rounded-xl border border-slate-800 bg-[#121826] overflow-hidden shadow-xl text-slate-100">
-          <Table className="print-hide-actions">
-            <TableHeader className="bg-[#1a2234] border-b border-slate-800">
+        <div className="flex h-[calc(100dvh-14rem)] min-h-80 flex-col overflow-hidden rounded-xl border border-slate-800 bg-[#121826] text-slate-100 shadow-xl print:h-auto print:min-h-0 print:overflow-visible">
+          <Table
+            className="print-hide-actions"
+            containerClassName="min-h-0 flex-1 print:overflow-visible"
+            containerAriaLabel="Bảng tổng hợp chấm công, có thể cuộn"
+            overlayScrollbars
+          >
+            <TableHeader className="sticky top-0 z-30 border-b border-slate-800 bg-[#1a2234]/95 shadow-[0_1px_0_rgba(255,255,255,0.04)] backdrop-blur [&_th]:sticky [&_th]:top-0 [&_th]:bg-[#1a2234]">
               <TableRow className="border-slate-800 hover:bg-[#1a2234]">
                 <TableHead className="font-semibold text-slate-300 text-xs">MÃ NV</TableHead>
                 <TableHead className="font-semibold text-slate-300 text-xs">HỌ VÀ TÊN</TableHead>
@@ -1742,7 +1747,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                 <TableHead className="font-semibold text-slate-300 text-xs">ĐI TRỄ / VỀ SỚM</TableHead>
                 <TableHead className="font-semibold text-slate-300 text-xs">PHÉP / VẮNG</TableHead>
                 <TableHead className="font-semibold text-slate-300 text-xs">XẾP LOẠI</TableHead>
-                <TableHead className="text-right font-semibold text-slate-300 text-xs">THAO TÁC</TableHead>
+                <TableHead className="sticky right-0 z-50 min-w-28 border-l border-slate-700 bg-[#1a2234] text-right text-xs font-semibold text-slate-300">THAO TÁC</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-slate-800/80">
@@ -1760,7 +1765,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                 </TableRow>
               ) : (
                 paginatedEmployeeSummaries.map((emp) => (
-                  <TableRow key={emp.employee_code} className="hover:bg-slate-800/50 transition-colors border-slate-800/60">
+                  <TableRow key={emp.employee_code} className="group border-slate-800/60 transition-colors hover:bg-slate-800/50">
                     <TableCell className="font-mono text-slate-400 font-semibold text-sm">{emp.employee_code}</TableCell>
                     <TableCell className="font-bold text-slate-100 text-sm">{emp.employee_name}</TableCell>
                     <TableCell>
@@ -1807,12 +1812,13 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                         </span>
                       )}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="sticky right-0 z-20 border-l border-slate-800 bg-[#121826] text-right group-hover:bg-slate-800">
                       <div className="flex justify-end items-center gap-1">
                         <Button 
                           variant="ghost" 
                           size="icon" 
                           className="h-8 w-8 text-blue-400 hover:text-blue-300 hover:bg-slate-800"
+                          aria-label={`Xem chấm công chi tiết của ${emp.employee_name}`}
                           title="Xem danh sách từng ngày"
                           onClick={() => {
                             setSearchTerm(emp.employee_code);
@@ -1826,6 +1832,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                           variant="ghost" 
                           size="icon" 
                           className="h-8 w-8 text-emerald-400 hover:text-emerald-300 hover:bg-slate-800"
+                          aria-label={`Mở phiếu tổng hợp của ${emp.employee_name}`}
                           title="Phiếu tổng hợp chi tiết"
                           onClick={() => setSelectedEmpModal(emp)}
                         >
@@ -1838,74 +1845,123 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
               )}
             </TableBody>
           </Table>
+          <TablePagination
+            page={page}
+            pageSize={pageSize}
+            totalCount={activeTotalCount}
+            onPageChange={setPage}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize);
+              setPage(1);
+            }}
+          />
         </div>
       ) : (
-        <div className="rounded-xl border bg-white overflow-hidden shadow-sm">
-          <Table className="print-hide-actions">
-            <TableHeader className="bg-slate-50">
-              <TableRow>
-                <TableHead className="w-12">
+        <div
+          className="flex h-[calc(100dvh-14rem)] min-h-80 flex-col overflow-hidden rounded-xl border border-border bg-card shadow-xs print:h-auto print:min-h-0 print:overflow-visible"
+          data-bd-group="dynamic-table-shell"
+        >
+          <Table
+            className="print-hide-actions min-w-max text-[13px] sm:text-sm"
+            containerClassName="min-h-0 flex-1 print:overflow-visible"
+            containerAriaLabel="Bảng dữ liệu, có thể cuộn"
+            overlayScrollbars
+          >
+            <TableHeader
+              className="sticky top-0 z-30 bg-muted/95 shadow-[0_1px_0_var(--border)] backdrop-blur supports-[backdrop-filter]:bg-muted/90 [&_th]:sticky [&_th]:top-0 [&_th]:bg-muted"
+              data-bd-group="dynamic-table-header"
+              data-bd-align-group="dynamic-table-header"
+            >
+              <TableRow className="border-border hover:bg-transparent">
+                <TableHead className="left-0 z-50 w-11 min-w-11 max-w-11 border-r border-border/70 px-3">
                   <Checkbox 
-                    className="rounded border-gray-300" 
+                    className="rounded border-border"
+                    aria-label="Chọn tất cả bản ghi trên trang"
                     checked={data.length > 0 && selectedIds.length === data.length}
                     onCheckedChange={(checked) => handleSelectAll(!!checked)}
                   />
                 </TableHead>
-                {activeColumns.map((col) => (
+                <TableHead className="left-11 z-50 w-14 min-w-14 max-w-14 border-r border-border/70 px-3 text-center text-xs font-semibold text-muted-foreground">
+                  STT
+                </TableHead>
+                {activeColumns.map((col, columnIndex) => (
                   <TableHead 
                     key={col.key} 
-                    className="font-semibold text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors"
+                    className={cn(
+                      "h-11 px-4 text-xs font-semibold text-foreground",
+                      columnIndex === 0 && "left-[6.25rem] z-50 min-w-48 border-r border-border/70"
+                    )}
                     style={{ width: col.width }}
-                    onClick={() => handleSort(col.key)}
                   >
-                    <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      className="flex h-full w-full items-center gap-2 rounded-sm text-left outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
+                      aria-label={`Sắp xếp theo ${col.label}`}
+                      onClick={() => handleSort(col.key)}
+                    >
                       {col.label}
                       {sortConfig.key === col.key ? (
-                        sortConfig.direction === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+                        sortConfig.direction === 'asc' ? <ArrowUp className="size-3.5" /> : <ArrowDown className="size-3.5" />
                       ) : (
-                        <ArrowUpDown className="h-3 w-3 text-slate-300" />
+                        <ArrowUpDown className="size-3.5 text-muted-foreground/50" />
                       )}
-                    </div>
+                    </button>
                   </TableHead>
                 ))}
-                <TableHead className="text-right">Thao tác</TableHead>
+                <TableHead className="right-0 z-50 h-11 min-w-40 border-l border-border/70 px-4 text-right text-xs font-semibold text-foreground">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={activeColumns.length + 2} className="h-32 text-center text-muted-foreground">
+                  <TableCell colSpan={activeColumns.length + 3} className="h-32 text-center text-muted-foreground">
                     Đang tải dữ liệu...
                   </TableCell>
                 </TableRow>
               ) : data.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={activeColumns.length + 2} className="h-32 text-center text-muted-foreground">
+                  <TableCell colSpan={activeColumns.length + 3} className="h-32 text-center text-muted-foreground">
                     Chưa có dữ liệu.
                   </TableCell>
                 </TableRow>
               ) : (
                 data.map((item, idx) => (
-                  <TableRow key={item.id || idx} className={`transition-colors ${selectedIds.includes(item.id) ? 'bg-blue-50/50' : 'hover:bg-slate-50/50'}`}>
-                    <TableCell>
+                  <TableRow
+                    key={item.id || idx}
+                    data-state={selectedIds.includes(item.id) ? 'selected' : undefined}
+                    className="group h-12 border-border/60 hover:bg-muted/40"
+                  >
+                    <TableCell className="sticky left-0 z-20 w-11 min-w-11 max-w-11 border-r border-border/60 bg-background px-3 group-hover:bg-muted group-data-[state=selected]:bg-muted">
                       <Checkbox 
-                        className="rounded border-gray-300" 
+                        className="rounded border-border"
+                        aria-label={`Chọn bản ghi ${(page - 1) * pageSize + idx + 1}`}
                         checked={selectedIds.includes(item.id)}
                         onCheckedChange={(checked) => handleSelectOne(item.id, !!checked)}
                       />
                     </TableCell>
-                    {activeColumns.map((col) => (
-                      <TableCell key={col.key}>
+                    <TableCell className="sticky left-11 z-20 w-14 min-w-14 max-w-14 border-r border-border/60 bg-background px-3 text-center text-xs font-medium tabular-nums text-muted-foreground group-hover:bg-muted group-data-[state=selected]:bg-muted">
+                      {(page - 1) * pageSize + idx + 1}
+                    </TableCell>
+                    {activeColumns.map((col, columnIndex) => (
+                      <TableCell
+                        key={col.key}
+                        className={cn(
+                          "px-4 text-foreground",
+                          col.type === 'number' && "tabular-nums",
+                          columnIndex === 0 && "sticky left-[6.25rem] z-20 min-w-48 border-r border-border/60 bg-background font-medium group-hover:bg-muted group-data-[state=selected]:bg-muted"
+                        )}
+                      >
                         {renderCell(item, col)}
                       </TableCell>
                     ))}
-                    <TableCell className="text-right">
+                    <TableCell className="sticky right-0 z-20 border-l border-border/60 bg-background px-4 text-right group-hover:bg-muted group-data-[state=selected]:bg-muted">
                       <div className="flex justify-end gap-1">
                         {config.id === 'functions' && onConfigFilter && (
                           <Button 
                             variant="ghost" 
                             size="icon" 
                             className="h-8 w-8 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                            aria-label="Cấu hình bộ lọc"
                             title="Cấu hình bộ lọc"
                             onClick={() => onConfigFilter(item)}
                           >
@@ -1917,6 +1973,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                             variant="ghost" 
                             size="icon" 
                             className="h-8 w-8 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                            aria-label="Phân quyền vai trò"
                             title="Phân quyền vai trò"
                             onClick={() => onPermissionMatrix(item)}
                           >
@@ -1928,6 +1985,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                             variant="ghost" 
                             size="icon" 
                             className="h-8 w-8 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                            aria-label="Đặt lại mật khẩu và gửi email"
                             title="Đặt lại mật khẩu & Gửi Email"
                             onClick={() => handleResetPassword(item.email)}
                           >
@@ -1939,6 +1997,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                             variant="ghost" 
                             size="icon" 
                             className="h-8 w-8 text-slate-600 hover:text-slate-700 hover:bg-slate-50"
+                            aria-label="Xem chi tiết"
                             title="Xem chi tiết"
                             onClick={() => onView(item)}
                           >
@@ -1950,6 +2009,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                             variant="ghost" 
                             size="icon" 
                             className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                            aria-label="Chỉnh sửa bản ghi"
                             onClick={() => onEdit(item)}
                           >
                             <Edit2 className="h-4 w-4" />
@@ -1960,6 +2020,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
                             variant="ghost" 
                             size="icon" 
                             className="h-8 w-8 text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+                            aria-label="Xóa bản ghi"
                             onClick={() => handleDelete(item.id)}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -1993,6 +2054,16 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
               )}
             </TableBody>
           </Table>
+          <TablePagination
+            page={page}
+            pageSize={pageSize}
+            totalCount={activeTotalCount}
+            onPageChange={setPage}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize);
+              setPage(1);
+            }}
+          />
         </div>
       )}
 
@@ -2029,56 +2100,6 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
           onClose={() => setResetPasswordEmail(null)}
         />
       )}
-
-      {/* Pagination */}
-      <div className="flex items-center justify-between px-2 no-print pagination-container">
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <span>
-            Hiển thị {activeTotalCount > 0 ? (page - 1) * pageSize + 1 : 0}-{Math.min(page * pageSize, activeTotalCount)} trên {activeTotalCount} bản ghi
-          </span>
-          <div className="flex items-center gap-1.5 text-xs text-slate-500">
-            <span>Hiển thị:</span>
-            <select 
-              value={pageSize} 
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-                setPage(1);
-              }}
-              className="h-8 w-[65px] rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs px-2 py-1 font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer shadow-sm"
-            >
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
-            <span>/ trang</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            disabled={page === 1}
-            onClick={() => setPage(p => p - 1)}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <div className="flex items-center gap-1">
-            <Button variant="outline" size="sm" className="bg-blue-600 text-white hover:bg-blue-700">{page}</Button>
-            {activeTotalCount > page * pageSize && (
-               <span className="text-xs text-slate-400 mx-1">...</span>
-            )}
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            disabled={page * pageSize >= activeTotalCount}
-            onClick={() => setPage(p => p + 1)}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
 
       {/* Employee Detail Modal */}
       <Dialog open={!!selectedEmpModal} onOpenChange={(open) => !open && setSelectedEmpModal(null)}>

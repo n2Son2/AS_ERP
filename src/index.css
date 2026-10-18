@@ -40,6 +40,12 @@
     background: #cbd5e1;
   }
 
+  @media (hover: hover) and (pointer: fine) {
+    .overlay-scrollbar[data-hovering] {
+      opacity: 1;
+    }
+  }
+
   .markdown-body {
     @apply text-sm leading-relaxed;
   }

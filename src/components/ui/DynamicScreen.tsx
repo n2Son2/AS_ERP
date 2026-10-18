@@ -76,7 +76,7 @@ export const DynamicScreen: React.FC<DynamicScreenProps> = ({ config, moduleTitl
         data-bd-align-group="screen-header"
       >
         <nav aria-label="Đường dẫn màn hình" className="min-w-0 flex-1 text-sm text-muted-foreground">
-          <ol className="flex min-w-0 items-center gap-1.5">
+          <ol className="flex min-w-0 items-center gap-2">
             <li className="shrink-0">
               <Home className="size-4" aria-hidden="true" />
             </li>
@@ -98,9 +98,9 @@ export const DynamicScreen: React.FC<DynamicScreenProps> = ({ config, moduleTitl
         </nav>
 
         <Tabs defaultValue="list" className="w-auto shrink-0">
-          <TabsList className="!h-11 border border-border/70 bg-muted p-1 shadow-xs sm:!h-9" aria-label="Chế độ hiển thị">
-            <TabsTrigger value="list" className="px-3">Danh sách</TabsTrigger>
-            <TabsTrigger value="stats" className="px-3">Thống kê</TabsTrigger>
+          <TabsList className="!h-11 border border-border/70 bg-muted p-0 shadow-xs sm:!h-9" aria-label="Chế độ hiển thị">
+            <TabsTrigger value="list" className="!h-11 gap-2 rounded-lg px-3 py-0 sm:!h-9">Danh sách</TabsTrigger>
+            <TabsTrigger value="stats" className="!h-11 gap-2 rounded-lg px-3 py-0 sm:!h-9">Thống kê</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

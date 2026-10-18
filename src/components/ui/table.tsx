@@ -1,18 +1,42 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+type TableProps = React.ComponentProps<"table"> & {
+  containerClassName?: string
+  containerAriaLabel?: string
+  overlayScrollbars?: boolean
+}
+
+function Table({ className, containerClassName, containerAriaLabel, overlayScrollbars = false, ...props }: TableProps) {
+  const table = (
+    <table
+      data-slot="table"
+      className={cn("w-full caption-bottom text-sm", className)}
+      {...props}
+    />
+  )
+
+  if (overlayScrollbars) {
+    return (
+      <ScrollArea
+        data-slot="table-container"
+        className={cn("relative w-full", containerClassName)}
+        scrollbars="both"
+        viewportProps={{
+          role: containerAriaLabel ? "region" : undefined,
+          "aria-label": containerAriaLabel,
+        }}
+      >
+        {table}
+      </ScrollArea>
+    )
+  }
+
   return (
-    <div
-      data-slot="table-container"
-      className="relative w-full overflow-x-auto"
-    >
-      <table
-        data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
-        {...props}
-      />
+    <div data-slot="table-container" className={cn("relative w-full overflow-x-auto", containerClassName)}>
+      {table}
     </div>
   )
 }
